@@ -1,0 +1,95 @@
+##############################################
+# C++ / CMake project .gitignore
+##############################################
+
+# Build directories
+build/
+*/build/
+
+# CMake generated
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+_deps/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+install_manifest.txt
+
+# (Uncomment if you prefer to ignore) compile_commands.json
+# compile_commands.json
+
+# Object & binary files
+*.o
+*.obj
+*.lo
+*.slo
+*.a
+*.la
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# Precompiled headers / modules
+*.gch
+*.pch
+*.mod
+*.smod
+
+# Debug / profile / instrumentation
+*.dSYM/
+*.pdb
+*.idb
+*.ilk
+*.exp
+*.stackdump
+perf.data*
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# Dependency files
+*.d
+
+# Test & CTest artifacts
+Testing/
+
+# Logs
+*.log
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Temp
+/tmp/
+
+# Archives
+*.tar
+*.gz
+*.bz2
+*.zip
+
+# Valgrind / cachegrind
+vgcore.*
+callgrind.out.*
+cachegrind.out.*
+
+# Other
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
