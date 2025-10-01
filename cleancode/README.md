@@ -33,3 +33,8 @@ make
 - Bibliothek keine Erweitebarkeit für Kunden
 
 
+Resterampe:
+- Testbarkeit ist nicht wesentlich beeinflußt
+- CahtGPT behautptet drehte sich im Kreis bei Testbarkeit.
+
+switch case ist polymprophismus

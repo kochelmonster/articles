@@ -4,8 +4,6 @@
 #include <algorithm>
 #include "shapes.h"
 
-
-
 // Declarations from other files
 f32 TotalAreaVTBL(u32 ShapeCount, shape_base **Shapes);
 f32 TotalAreaVTBL4(u32 ShapeCount, shape_base **Shapes);
@@ -14,7 +12,7 @@ f32 CornerAreaVTBL4(u32 ShapeCount, shape_base **Shapes);
 
 // Optimized buffer-based versions
 f32 TotalAreaCollector(AreaCollector& acollector);
-f32 CornerAreaCollector(OptimizedCornerCollector& collector);
+f32 CornerAreaCollector(CornerCollector& collector);
 
 // Buffer traversal optimized versions
 f32 TotalAreaOptVTBL(u32 ShapeCount, char* buffer);
@@ -33,8 +31,9 @@ f32 CornerAreaUnion(u32 ShapeCount, shape_union* Shapes);
 f32 CornerAreaUnion4(u32 ShapeCount, shape_union* Shapes);
 
 constexpr u32 N = 1000000;
-constexpr u32 COUNT = 100;
+constexpr u32 COUNT = 1000;
 
+// Benchmark function for general use
 void bench(const char* name, f32(*func)(u32, void*), u32 count, void* shapes) {
     auto start = std::chrono::high_resolution_clock::now();
     f32 result = 0.0f;
@@ -46,7 +45,7 @@ void bench(const char* name, f32(*func)(u32, void*), u32 count, void* shapes) {
     std::cout << name << ": " << ms / COUNT << " ms avg (" << COUNT << " runs), result = " << result << std::endl;
 }
 
-// Specialized bench function for TotalAreaCollector
+// Specialized benchmark function for AreaCollector
 void bench_total_collector(const char* name, f32(*func)(AreaCollector&), AreaCollector& collector) {
     auto start = std::chrono::high_resolution_clock::now();
     f32 result = 0.0f;
@@ -58,36 +57,66 @@ void bench_total_collector(const char* name, f32(*func)(AreaCollector&), AreaCol
     std::cout << name << ": " << ms / COUNT << " ms avg (" << COUNT << " runs), result = " << result << std::endl;
 }
 
-// Specialized bench function for OptimizedCornerCollector
-void bench_optimized_corner_collector(const char* name, f32(*func)(OptimizedCornerCollector&), 
-                                      OptimizedCornerCollector& collector) {
+// Simplified benchmark function for CornerCollector
+void bench_corner_collector(const char* name, CornerCollector& collector) {
     auto start = std::chrono::high_resolution_clock::now();
     f32 result = 0.0f;
     for (u32 i = 0; i < COUNT; ++i) {
-        result = func(collector);
+        result = CornerAreaCollector(collector);
     }
     auto end = std::chrono::high_resolution_clock::now();
     double ms = std::chrono::duration<double, std::milli>(end - start).count();
     std::cout << name << ": " << ms / COUNT << " ms avg (" << COUNT << " runs), result = " << result << std::endl;
 }
 
+// Function pointer wrappers for compatibility
+f32 vtbl_area(u32 count, void* shapes) { 
+    return TotalAreaVTBL(count, (shape_base**)shapes); 
+}
 
+f32 vtbl_area4(u32 count, void* shapes) { 
+    return TotalAreaVTBL4(count, (shape_base**)shapes); 
+}
 
-// Wrappers for function pointer compatibility
-f32 vtbl_area(u32 count, void* shapes) { return TotalAreaVTBL(count, (shape_base**)shapes); }
-f32 vtbl_area4(u32 count, void* shapes) { return TotalAreaVTBL4(count, (shape_base**)shapes); }
-f32 vtbl_corner(u32 count, void* shapes) { return CornerAreaVTBL(count, (shape_base**)shapes); }
-f32 vtbl_corner4(u32 count, void* shapes) { return CornerAreaVTBL4(count, (shape_base**)shapes); }
+f32 vtbl_corner(u32 count, void* shapes) { 
+    return CornerAreaVTBL(count, (shape_base**)shapes); 
+}
 
-f32 switch_area(u32 count, void* shapes) { return TotalAreaSwitch(count, (shape_union*)shapes); }
-f32 switch_area4(u32 count, void* shapes) { return TotalAreaSwitch4(count, (shape_union*)shapes); }
-f32 switch_corner(u32 count, void* shapes) { return CornerAreaSwitch(count, (shape_union*)shapes); }
-f32 switch_corner4(u32 count, void* shapes) { return CornerAreaSwitch4(count, (shape_union*)shapes); }
+f32 vtbl_corner4(u32 count, void* shapes) { 
+    return CornerAreaVTBL4(count, (shape_base**)shapes); 
+}
 
-f32 table_area(u32 count, void* shapes) { return TotalAreaUnion(count, (shape_union*)shapes); }
-f32 table_area4(u32 count, void* shapes) { return TotalAreaUnion4(count, (shape_union*)shapes); }
-f32 table_corner(u32 count, void* shapes) { return CornerAreaUnion(count, (shape_union*)shapes); }
-f32 table_corner4(u32 count, void* shapes) { return CornerAreaUnion4(count, (shape_union*)shapes); }
+f32 switch_area(u32 count, void* shapes) { 
+    return TotalAreaSwitch(count, (shape_union*)shapes); 
+}
+
+f32 switch_area4(u32 count, void* shapes) { 
+    return TotalAreaSwitch4(count, (shape_union*)shapes); 
+}
+
+f32 switch_corner(u32 count, void* shapes) { 
+    return CornerAreaSwitch(count, (shape_union*)shapes); 
+}
+
+f32 switch_corner4(u32 count, void* shapes) { 
+    return CornerAreaSwitch4(count, (shape_union*)shapes); 
+}
+
+f32 table_area(u32 count, void* shapes) { 
+    return TotalAreaUnion(count, (shape_union*)shapes); 
+}
+
+f32 table_area4(u32 count, void* shapes) { 
+    return TotalAreaUnion4(count, (shape_union*)shapes); 
+}
+
+f32 table_corner(u32 count, void* shapes) { 
+    return CornerAreaUnion(count, (shape_union*)shapes); 
+}
+
+f32 table_corner4(u32 count, void* shapes) { 
+    return CornerAreaUnion4(count, (shape_union*)shapes); 
+}
 
 int main() {
     // Prepare shapes for all versions
@@ -128,9 +157,11 @@ int main() {
         buffer_ptr += max_size;
     }
     
+    // Create collector instances
     AreaCollector area_collector;
-    OptimizedCornerCollector optimized_collector; // New OptimizedCornerCollector instance
+    CornerCollector corner_collector;
 
+    // Fill vectors with shapes
     for (u32 i = 0; i < N; ++i) {
         switch (i % 4) {
             case 0:
@@ -151,8 +182,10 @@ int main() {
                 break;
         }
         area_collector.addShape(vtbl_shapes.back());
-        optimized_collector.addShape(vtbl_shapes.back());
+        corner_collector.addShape(vtbl_shapes.back());
     }
+    
+    // Get raw pointers for benchmarking
     shape_base** vtbl_ptrs = vtbl_shapes.data();
     shape_union* flat_ptrs = flat_shapes.data();
 
@@ -166,7 +199,7 @@ int main() {
 
     std::cout << "=== Clean Code with Collectors ===" << std::endl;
     bench_total_collector("TotalAreaCollector", TotalAreaCollector, area_collector);
-    bench_optimized_corner_collector("OptimizedCornerCollector", CornerAreaCollector, optimized_collector);
+    bench_corner_collector("CornerCollector", corner_collector);
 
     std::cout << "=== Switch statement ===" << std::endl;
     bench("Switch TotalArea", switch_area, N, flat_ptrs);
@@ -181,7 +214,10 @@ int main() {
     bench("Table CornerArea4", table_corner4, N, flat_ptrs);
 
     // Cleanup
-    for (auto ptr : vtbl_shapes) delete ptr;
+    for (auto ptr : vtbl_shapes) {
+        delete ptr;
+    }
     // local_shapes objects are in the buffer, will be destroyed when buffer goes out of scope
+    
     return 0;
 }
