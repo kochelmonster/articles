@@ -373,7 +373,7 @@ This part shows how we keep a clean, object‑oriented public model while moving
     
 Only step 3 is hardware‑specific; steps 1 and 2 remain clean and object oriented.
 
-### 3.1 Collectors: A Thin Adaptation Layer
+### 5.1 Collectors: A Thin Adaptation Layer
 
 The collectors decouple the object interface ( `shape_base` ) from the optimized aggregation. They extract exactly what the hot loops need:
 
