@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles by Michael</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .article-list {
+            list-style: none;
+            padding: 0;
+        }
+        .article-item {
+            background: #f8f9fa;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            transition: box-shadow 0.3s ease;
+        }
+        .article-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .article-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .article-title a {
+            text-decoration: none;
+            color: #2c3e50;
+        }
+        .article-title a:hover {
+            color: #3498db;
+        }
+        .article-description {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        .article-meta {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+        }
+        .github-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #24292e;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .github-link:hover {
+            background: #2f363d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Technical Articles</h1>
+        <p>A collection of articles on software engineering, performance optimization, and programming practices.</p>
+    </header>
+
+    <main>
+        <ul class="article-list">
+            <li class="article-item">
+                <div class="article-title">
+                    <a href="cleancode.html">Clean Code vs. Optimization: Debunking the False Dichotomy</a>
+                </div>
+                <div class="article-description">
+                    A comprehensive response to Casey Muratori's "Clean Code, Horrible Performance" that demonstrates how to achieve exceptional performance (75x speedup) while maintaining clean, maintainable code through strategic optimization techniques.
+                </div>
+                <div class="article-meta">
+                    Topics: Performance Optimization, Clean Code, C++, SIMD, Software Architecture
+                </div>
+            </li>
+        </ul>
+    </main>
+
+    <footer>
+        <p>Written by Michael</p>
+        <a href="https://github.com/kochelmonster/articles" class="github-link" target="_blank">
+            📚 View Source Code on GitHub
+        </a>
+    </footer>
+</body>
+</html>
