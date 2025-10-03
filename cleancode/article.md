@@ -359,15 +359,15 @@ Despite this methodological issue, let's examine the actual performance claims. 
 
 The results show the best optimized version achieving 16x improvement over baseline clean code—or 6.5x compared to unrolled clean code. While significant, this falls short of Muratori's claimed 25x speedup.
 
-More importantly, these optimizations exploit processor-specific features:
+This does not surprise: The optimizations exploit processor-specific features:
 
 - Loop unrolling enables pipelining
 - Switch-case code leverages branch prediction  
 - Table-driven code exploits cache optimization
 
-These advantages only materialize on processors supporting specific optimization techniques. While most modern processors include these features, future architectures might render them obsolete—or even favor different approaches like optimized indirection. Today's micro-optimizations could become tomorrow's performance bottlenecks.
+These optimizations only work on CPUs that support them, and the benefits can vary significantly across different processor types. While most modern processors include these features, future architectures might render them obsolete—or even favor different approaches like optimized indirection. Today's micro-optimizations could become tomorrow's performance bottlenecks.
 
-The platform dependency runs deeper than architecture evolution. On resource-constrained processors, these optimizations can backfire: I once achieved 150% speedup on a PIC microcontroller by replacing switch statements with function pointer arrays—the exact opposite of Muratori's recommendation.
+The platform dependency runs deeper than architecture evolution. On resource-constrained processors, these optimizations can backfire: I once achieved 300% speedup on a PIC microcontroller by replacing switch statements with function pointer arrays—the exact opposite of Muratori's recommendation.
 
 Muratori makes a particularly striking analogy:
 

@@ -375,14 +375,14 @@ f32 total <span class="token operator">=</span> <span class="token function">Tot
 </tbody>
 </table>
 <p>The results show the best optimized version achieving 16x improvement over baseline clean code—or 6.5x compared to unrolled clean code. While significant, this falls short of Muratori's claimed 25x speedup.</p>
-<p>More importantly, these optimizations exploit processor-specific features:</p>
+<p>This does not surprise: The optimizations exploit processor-specific features:</p>
 <ul>
 <li>Loop unrolling enables pipelining</li>
 <li>Switch-case code leverages branch prediction</li>
 <li>Table-driven code exploits cache optimization</li>
 </ul>
-<p>These advantages only materialize on processors supporting specific optimization techniques. While most modern processors include these features, future architectures might render them obsolete—or even favor different approaches like optimized indirection. Today's micro-optimizations could become tomorrow's performance bottlenecks.</p>
-<p>The platform dependency runs deeper than architecture evolution. On resource-constrained processors, these optimizations can backfire: I once achieved 150% speedup on a PIC microcontroller by replacing switch statements with function pointer arrays—the exact opposite of Muratori's recommendation.</p>
+<p>These optimizations only work on CPUs that support them, and the benefits can vary significantly across different processor types. While most modern processors include these features, future architectures might render them obsolete—or even favor different approaches like optimized indirection. Today's micro-optimizations could become tomorrow's performance bottlenecks.</p>
+<p>The platform dependency runs deeper than architecture evolution. On resource-constrained processors, these optimizations can backfire: I once achieved 300% speedup on a PIC microcontroller by replacing switch statements with function pointer arrays—the exact opposite of Muratori's recommendation.</p>
 <p>Muratori makes a particularly striking analogy:</p>
 <blockquote>
 <p><em>To put that in hardware terms, it would be like taking an iPhone 14 Pro Max and reducing it to an iPhone 11 Pro Max. It's three or four years of hardware evolution erased because somebody said to use polymorphism instead of switch statements.</em></p>
