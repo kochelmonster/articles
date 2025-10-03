@@ -17,3 +17,18 @@ add_executable(bench
     src/table_code.cpp
     src/optimized_clean_code.cpp
 )
+
+# Benchmark: switch vs virtual
+add_executable(bench_switch_vs_virtual
+    src/bench_switch_vs_virtual.cpp
+)
+
+# Extreme benchmark: switch vs virtual with 200+ cases
+add_executable(extreme_switch_vs_virtual
+    src/extreme_switch_vs_virtual.cpp
+)
+
+# Ultra benchmark: switch vs virtual with 1000 cases!
+add_executable(ultra_switch_vs_virtual
+    src/ultra_switch_vs_virtual.cpp
+)

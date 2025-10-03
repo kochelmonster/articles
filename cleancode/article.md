@@ -2,19 +2,17 @@
 
 ## Prologue: Reexamining "Clean Code, Horrible Performance"
 
-This article is a response to "Clean Code, Horrible Performance" ([https://www.computerenhance.com/p/clean-code-horrible-performance](https://www.computerenhance.com/p/clean-code-horrible-performance)) of Casey Muratori. He argues that the principles of "clean code" as popularized by Robert C. Martin (Uncle Bob) lead to poor performance in software, using shape area calculations as a case study. The "clean code" methodology would make software dramatically slower with four out of five core principles of clean coding being detrimental to performance, resulting in code that can be 15 times slower or worse. According to Casey Muratori, sacrificing a decade of hardware performance improvements just for programmer convenience is unacceptable, and that while code organization and maintainability are worthy goals, the current "clean code" rules fail to achieve them without severe performance penalties.
+This article responds to Casey Muratori's provocative piece "Clean Code, Horrible Performance" ([https://www.computerenhance.com/p/clean-code-horrible-performance](https://www.computerenhance.com/p/clean-code-horrible-performance)). Muratori argues that Robert C. Martin's "clean code" principles fundamentally compromise software performance, using shape area calculations to demonstrate his point. His central thesis is stark: clean code methodology makes software dramatically slower, with four of the five core principles proving detrimental to performance—sometimes by a factor of 15 or more.
 
-This answer article consists of 5 parts:
+Muratori contends that sacrificing a decade of hardware performance improvements for programmer convenience is unacceptable. While acknowledging that code organization and maintainability are worthy goals, he argues that current "clean code" practices fail to achieve them without imposing severe performance penalties.
 
-1. A short Introduction to the code Casey Muratori presented.
+This response unfolds across five parts:
 
-2. A general Discussion about the goals of professional software development and the ranking of runtime performance against other quality attributes.
-
-3. I examine what sacrifices Casey had to make with his optimized versions make in terms of extensibility and maintainability. 
-
-4. I critically evaluate the performance claims of Casey, examining whether the conclusions drawn are fully supported by the evidence presented.
-
-5. I present a clean code solution that maintains good object-oriented design principles while achieving performance more than 300% faster than even the "optimized" implementations presented in the original article. This demonstrates that clean code and performance are not mutually exclusive goals.
+1. **Code Analysis**: Examining the three implementations Muratori presented as his case study
+2. **Context Setting**: Discussing professional software development goals and where performance fits among quality attributes  
+3. **Hidden Costs**: Analyzing what Muratori's optimizations sacrifice in terms of maintainability and extensibility
+4. **Performance Evaluation**: Critically examining the performance claims and their broader implications
+5. **Synthesis**: Presenting a clean code solution that achieves performance exceeding even the "optimized" implementations by over 4x, proving that clean code and performance need not be mutually exclusive
 
 ## Part 1: The Code Competing for Performance
 
@@ -181,24 +179,25 @@ The table-driven approach further simplifies the switch method by replacing cond
 
 ## Part 2: Software Quality Attributes
 
-Object-orientation and clean coding was not developed as a new fancy way of writing code: It is an answer of problems the developers community faced during the life cycle of software projects, especially Maintainability and Extensibility.
+Object-oriented programming and clean coding practices weren't developed as academic exercises—they emerged as practical solutions to real problems that plagued software projects throughout their lifecycles, particularly around maintainability and extensibility.
 
-In the 1990's I worked for several banks and learned an unforeseen problem could lead to massive costs:
-The programmers of the boot routines for their main frames died already and no one understood the functional mess anymore. So the banks invested millions of dollars for hardware to keep the main frames running: Everyone feared after a shutdown the whole system wouldn't boot up anymore.
+In the 1990s, while working for several banks, I witnessed firsthand how seemingly minor oversights could spiral into catastrophic costs. The programmers who wrote the boot routines for the mainframes had long since retired or passed away, leaving behind impenetrable legacy code. No one dared shut down the systems for fear they wouldn't boot again. Banks spent millions on increasingly obsolete hardware just to keep these digital time bombs running.
 
-Clean coding is not just about programmers "inconvenience", but about cost efficiency. Every optimization needs extra development time, extra testing code, and extra documentation. Often the the optimation use tricks that make the code less readable and harder to maintain. Is your customer ready to pay this extra costs for a speed improvment he does not even notice?
+This illustrates a crucial point: clean coding isn't about programmer "convenience"—it's about economic efficiency. Every micro-optimization demands additional development time, specialized testing, and extensive documentation. Optimizations often rely on clever tricks that sacrifice readability and maintainability. The critical question becomes: is your customer willing to pay these hidden costs for speed improvements they may never notice?
 
-Runtime performance is a crucial aspect of software, but it must be considered in context. Professional software development is fundamentally about cost efficiency—delivering substantial functionality with minimal effort. With Functionality I mean not only features, but also reliability, maintainability, extensibility, portability, testability, and finally execution speed. Software must be "fast enough" for its intended use: in many cases, this just means the user doesn't have to wait, but in some domains, even a millisecond can be too slow.
+Runtime performance is undeniably important, but it must be weighed against other quality attributes. Professional software development is fundamentally about maximizing value while minimizing cost—delivering rich functionality with reasonable effort. "Functionality" here encompasses not just features, but the full spectrum of software qualities: reliability, maintainability, extensibility, portability, testability, and yes, execution speed.
 
-Optimization should only begin when the software isn't fast enough. Freely adapted from Einstein's advice: "make software as fast as needed, but not faster."
+Software needs to be "fast enough" for its context. For most user-facing applications, this means avoiding perceptible delays. In high-frequency trading or real-time systems, microseconds matter. But in many domains, obsessing over performance that users will never notice represents a costly misallocation of resources.
+
+The principle is simple: optimize when performance becomes a genuine constraint, not preemptively. To paraphrase Einstein: "Make software as fast as needed, but not faster."
 
 ## Part 3: Maintainability and Extensibility - The Hidden Costs of Optimization
 
-Let's examine how Casey Muratori's code performans during a typical software lifecycle.
+Let's examine how Muratori's optimizations fare during typical software evolution.
 
 ### The Burden of Algorithm Changes
 
-What happens when we need to implement a more sophisticated area calculation for triangles using Heron's formula, which uses the lengths of all three sides?
+Consider a seemingly simple change: upgrading triangle area calculation from the basic base×height formula to Heron's formula, which requires all three side lengths.
 
 **In clean code**, the change is straightforward:
 
@@ -283,12 +282,11 @@ f32 GetAreaUnion(const shape_union& Shape) {
 
 The table approach fundamentally breaks because Heron's formula doesn't fit the coefficient pattern assumed by the table design.
 
-Because Casey Muray changed the whole architecture for better runtime performance, a simple implementation change of one shape's method requires a complete rewrite of the whole program! In table code it even breaks the whole structure.
+Because Muratori restructured the entire architecture for runtime performance, a simple algorithmic change to one shape's method cascades into a complete program rewrite. The table-driven approach fares even worse—it fundamentally breaks under this change.
 
+### The Library Extensibility Challenge
 
-### The Library Scenario
-
-As you see the optimized code does not so well in maintainability. How does it perform with extensibility? The original clean code examples shows a quite typical library scenario. And good libray should be easily extended by own shapes. Lets try it out and add a hexagon shape.
+The maintainability problems are clear, but what about extensibility? The clean code approach represents a common library scenario where third parties should be able to add new shape types. Let's test this by adding a hexagon shape.
 
 **In clean code**, third parties can extend the system without any changes to your library:
 
@@ -312,17 +310,37 @@ private:
 f32 total = TotalAreaVTBL(1, &myHexagon);
 ```
 
-**In switch code**, you have have to change every function to insert your hexagon code! If you want to sell your library to third parties, you have to provide the complete source code, so the can modify it. But what will happen, when you release the next version?
+**In switch code**, every function must be modified to handle hexagons. Library vendors would need to provide full source code for customers to add shapes—but what happens when you release the next version? Customer modifications become merge conflicts.
 
-**In table code**, extension is practically impossible without modifying the library source code or creating wrappers that defeat the original optimization purpose.
+**In table code**, extension requires either modifying the library source or creating wrapper layers that defeat the original optimization.
 
-Casey Muratori's optimizations come at a high cost: It is neither maintainable nor extensible. In what will your customer invest his money? 
-Extensible and maintainable software that needs a faster hardware (which gets cheaper and faster every year) or a highly optimized but inflexible and unmaintainable software that can run on cpu's from 10 years ago?
+Muratori's optimizations extract a steep price: they sacrifice both maintainability and extensibility. This forces a strategic choice: invest in flexible, maintainable software that may require faster hardware (which becomes cheaper annually), or lock yourself into highly optimized but inflexible code frozen in time?
 
 
 ## Part 4: Performance Claims Analysis
 
-Unfortunately the Casey Muratori did not publish the benchmark code he used to measure the speed. According to his article his version run 25 times faster than the clean code version. I used his code samples and wrote my own benchmark code. Here is the result on a AMD Ryzen 7 8745H:
+### The Fundamental Methodological Flaw
+
+Before examining the performance numbers, we must address a critical issue with Muratori's comparison methodology: **he compares demo-quality clean code against highly optimized implementations**. This is fundamentally unfair—like comparing a bicycle against a Formula 1 race car and concluding that bicycles are inherently slow.
+
+Muratori's "clean code" baseline appears designed for readability and teaching purposes, not performance. It lacks even basic optimizations that would be standard in any performance-sensitive clean code implementation:
+- No loop unrolling
+- No compiler optimization flags consideration  
+- No data structure optimization
+- No algorithmic improvements
+- No consideration of cache-friendly patterns
+
+Meanwhile, his "optimized" versions employ aggressive techniques:
+- Manual loop unrolling
+- Processor-specific optimizations
+- Cache-optimized data layouts
+- Branch prediction exploitation
+
+**A fair comparison would pit optimized clean code against optimized procedural code**, not demo code against production-tuned implementations. This methodological flaw undermines the entire premise that clean code is inherently slower.
+
+### Empirical Verification
+
+Despite this methodological issue, let's examine the actual performance claims. Muratori's performance claims lack reproducible benchmark code, reporting that his optimized versions run 25 times faster than the clean code baseline. To verify these claims, I implemented his code samples and created comprehensive benchmarks. Testing on an AMD Ryzen 7 8745H yielded these results:
 
 | Benchmark | Time (ms) | Speedup Factor |
 |-----------|-----------|----------------|
@@ -339,47 +357,49 @@ Unfortunately the Casey Muratori did not publish the benchmark code he used to m
 | Table CornerArea | 0.626 | 8.56x |
 | Table CornerArea4 | 0.332 | 16.13x |
 
-So on my system the best optimized version is "only" 16 times faster than the clean code version. (Compared to the unrolled clean code version it is "only" 6.5 times faster.)
+The results show the best optimized version achieving 16x improvement over baseline clean code—or 6.5x compared to unrolled clean code. While significant, this falls short of Muratori's claimed 25x speedup.
 
-Thus is not surprising: all the optimizations using processor-specific features:
+More importantly, these optimizations exploit processor-specific features:
 
 - Loop unrolling enables pipelining
-- switch-case code leverages branch prediction
-- table-driven code exploits cache optimization
+- Switch-case code leverages branch prediction  
+- Table-driven code exploits cache optimization
 
-The speed advantage is only visible on processors that support these techniques. While most modern processors support these optimizations, future processor generations could make them obsolete—or even favor different techniques, such as indirections. In that case, highly optimized code may become a liability, running slower than clean code.
-On older or simpler cpus the optimizations can even be counterproductive: For example I once achieved a 150% speedup on a small PIC microcontroller by replacing a switch-case with a function pointer array.
+These advantages only materialize on processors supporting specific optimization techniques. While most modern processors include these features, future architectures might render them obsolete—or even favor different approaches like optimized indirection. Today's micro-optimizations could become tomorrow's performance bottlenecks.
 
-Casey Muratori makes a striking claim: 
+The platform dependency runs deeper than architecture evolution. On resource-constrained processors, these optimizations can backfire: I once achieved 150% speedup on a PIC microcontroller by replacing switch statements with function pointer arrays—the exact opposite of Muratori's recommendation.
+
+Muratori makes a particularly striking analogy:
 
 > *To put that in hardware terms, it would be like taking an iPhone 14 Pro Max and reducing it to an iPhone 11 Pro Max. It's three or four years of hardware evolution erased because somebody said to use polymorphism instead of switch statements.*
 
-On one side it is a kind of circular reasoning: The optimization he uses only work on the modern hardware. On the other side if this were a valid argument, we would have to immediately ban all scripting languages, since they would likely turn an iPhone 14 into an iPhone 3. Consequently we should also have to throw out all compilers: only with assembler you can fully exploit the processor's performance. 
+This argument contains internal contradictions. The optimizations he advocates only work effectively on modern hardware—the very hardware he claims is being "erased." Furthermore, if we accepted this logic consistently, we'd need to ban all interpreted languages (which would regress an iPhone 14 to iPhone 3 performance) and abandon high-level languages entirely in favor of hand-optimized assembly. 
 
-Beyond hardware-specific tricks, it's important to recognize the role of compilers and language advances. Modern compilers are increasingly capable of optimizing away many performance bottlenecks that previously required manual intervention. Techniques such as inlining, dead code elimination, and profile-guided optimization can often match or exceed the performance of hand-optimized code. Relying on manual micro-optimizations may result in code that is less portable and less likely to benefit from future compiler improvements.
+### The Broader Performance Picture
 
-Moreover, real-world bottlenecks are often elsewhere. In many practical applications, the true performance bottlenecks are not in the computational code itself, but in I/O, networking, or external dependencies. Optimizing shape area calculations may have negligible impact compared to database or network latency. Focusing optimization efforts on the wrong part of the system can lead to wasted effort and minimal real-world gains.
+Modern compilers increasingly eliminate performance gaps that once required manual intervention. Advanced optimization techniques—inlining, dead code elimination, profile-guided optimization—often match or exceed hand-tuned code while maintaining portability and forward compatibility.
 
-Algorithmic improvements also tend to yield much larger performance gains than micro-optimizations. Switching from an O(n²) to an O(n log n) algorithm, for example, can dwarf any gains from low-level code tweaks. Highly optimized, hardware-specific code may not be portable to other platforms or future hardware generations. What is fast on one processor may be slow or even counterproductive on another. Clean, portable code is more likely to benefit from advances in hardware and compiler technology without requiring major rewrites.
+Real-world performance bottlenecks rarely lie in computational hotpaths like shape calculations. Database queries, network latency, and I/O operations typically dominate performance profiles. Optimizing the wrong component—no matter how elegantly—delivers negligible user-visible improvements.
+
+Algorithmic improvements consistently outweigh micro-optimizations. Converting an O(n²) algorithm to O(n log n) dwarfs any low-level tweaking benefits. Moreover, clean, portable code positions itself to benefit from future compiler advances and hardware evolution without requiring architectural rewrites.
 
 
-## Part 5: Optimized Clean Code – Clean Principles Meet High Performance
+## Part 5: Optimized Clean Code – The Best of Both Worlds
 
-This part shows how we keep a clean, object‑oriented public model while moving the hot arithmetic into a data‑oriented, SIMD‑friendly layer. We separate three concerns: 
+This section demonstrates how to preserve clean, object-oriented interfaces while achieving exceptional performance through strategic optimization. The approach separates three distinct concerns:
 
-1. collecting invariant scalar data, 
-2. precomputing per‑shape factors once, and 
-3. performing wide aggregation using vector instructions. 
-    
-Only step 3 is hardware‑specific; steps 1 and 2 remain clean and object oriented.
+1. **Data Collection**: Maintaining clean object-oriented interfaces for domain logic
+2. **Precomputation**: Extracting and caching invariant data once per shape  
+3. **Vectorized Aggregation**: Performing bulk calculations using SIMD instructions
 
-### 5.1 Collectors: A Thin Adaptation Layer
+Crucially, only the final step involves hardware-specific optimizations—the domain model and data collection remain clean, maintainable, and extensible.
 
-The collectors decouple the object interface ( `shape_base` ) from the optimized aggregation. They extract exactly what the hot loops need:
+### 5.1 Collectors: Bridging Clean Code and Performance
 
-* `AreaCollector`: stores raw areas in a contiguous `std::vector<float>`.
+The collector pattern creates a thin adaptation layer between the clean object interface and optimized computation. These classes extract precisely what the performance-critical loops require:
 
-* `CornerCollector`: stores areas plus a precomputed weight `1/(1+corner_count)` so the expensive division and virtual calls are paid once per shape, not inside the SIMD loop.
+* `AreaCollector`: stores raw areas in a contiguous `std::vector<float>`
+* `CornerCollector`: stores areas plus precomputed weight `1/(1+corner_count)`, paying the expensive division and virtual call costs once per shape rather than inside the SIMD loop
 
 ```cpp
 class AreaCollector {
@@ -405,11 +425,11 @@ public:
 };
 ```
 
-These classes preserve the cleanliness of the domain model while enabling a layout the CPU loves.
+These collectors preserve domain model clarity while organizing data for optimal CPU utilization—the best of both architectural worlds.
 
-### 5.2 Using the Collectors (Precomputation Phase)
+### 5.2 Precomputation: Pay Once, Benefit Repeatedly  
 
-We build the usual polymorphic shape list for clarity and extensibility, and simultaneously feed the collectors. The loop performs all virtual dispatch exactly once per shape; afterwards aggregation is pure array math.
+The setup phase maintains the familiar polymorphic shape interface while simultaneously feeding the collectors. Virtual method dispatch occurs exactly once per shape during data collection—subsequent aggregation becomes pure vectorized arithmetic.
 
 ```cpp
 std::vector<shape_base*> shapes;
@@ -428,11 +448,11 @@ for (u32 i = 0; i < N; ++i) {
 }
 ```
 
-Conceptually: we have transformed a virtual-call dominated reduction into two phases (gather + crunch). If you port to a different architecture or change vector width, this gathering code remains untouched.
+This architectural transformation splits virtual-dispatch-heavy reduction into two clean phases: gather and crunch. Porting to different architectures or vector widths leaves the gathering logic completely untouched.
 
-### 5.3 Aggregation: Vectorized Crunch Layer
+### 5.3 Vectorized Aggregation: Where Performance Magic Happens
 
-The aggregation functions operate on plain contiguous floats. They use AVX (256‑bit) intrinsics for eight‑wide parallelism, loop unrolling, multiple accumulators to hide latency, prefetching to reduce cache miss penalties, and (in the weighted variant) FMA for `a*b + c` in one fused step.
+The aggregation layer operates on contiguous float arrays, deploying the full arsenal of modern CPU optimization: AVX 256-bit intrinsics for 8-wide parallelism, aggressive loop unrolling, multiple accumulators to hide pipeline latency, intelligent prefetching for cache optimization, and fused multiply-add (FMA) operations.
 
 Area aggregation (abridged for focus):
 
@@ -506,14 +526,14 @@ f32 TotalAreaCollector(AreaCollector& collector) {
 
 ```
 
-I'll spare you the CornerAreaCollector function, which is similar boring. (You can find it in the code repository[^1].)
+The CornerAreaCollector follows similar patterns with additional complexity for weighted calculations. (Complete implementation details are available in the code repository[^1].)
 
-This implementation uses:
+The optimization arsenal deployed includes:
 
-* **SIMD (AVX) instructions** for parallel processing of shape areas and weights
-* **Loop unrolling** and **multiple accumulators** to maximize instruction-level parallelism
-* **Cache prefetching** for large arrays to minimize memory latency
-* **Fused Multiply-Add (FMA)** for efficient weighted sums
+* **SIMD (AVX) Instructions**: 8-way parallel processing of floating-point data  
+* **Aggressive Loop Unrolling**: Multiple accumulators to maximize instruction-level parallelism
+* **Intelligent Prefetching**: Proactive cache loading for large datasets
+* **Fused Multiply-Add (FMA)**: Single-instruction `a*b + c` operations for weighted sums
 
 
 ### Speed Comparison: Clean Code vs. Switch vs. Table
@@ -531,20 +551,35 @@ This implementation uses:
 These values were measured on a AMD Ryzen 7 8745H with GCC 13.3.0 and all optimizations enabled.
 
 
-### Conclusion: Clean Code Can Be Fast
+## Conclusion: Transcending False Dichotomies
 
-The dichotomy between clean code and performance is a false one, as demonstrated by our optimized clean code implementation that achieves 70x better performance while maintaining good software engineering principles. By separating concerns and applying targeted optimizations where they matter most, developers can create systems that are both clean and fast without sacrificing maintainability or extensibility.
+The supposed trade-off between clean code and performance represents a false choice. Our optimized implementation delivers 70x performance improvement while preserving sound software engineering principles. The key insight: strategic separation of concerns allows targeted optimization where it matters most, creating systems that are simultaneously clean and fast without sacrificing maintainability or extensibility.
+
+**The path forward combines:**
+- **Clean interfaces** that preserve domain clarity and enable extension
+- **Strategic optimization** applied only where performance demands it  
+- **Architectural separation** between business logic and computational efficiency
+- **Modern tooling** (SIMD, advanced compilers) used judiciously rather than universally
+
+This approach delivers genuine value: software that performs exceptionally while remaining adaptable to changing requirements and maintainable across its entire lifecycle.
 
 
-## Epilogue
+---
 
-Another striking claim of Casey Muratori is:
+## Epilogue: Lessons from the Benchmarking Journey
 
-> *Personally, I wouldn’t say that a switch statement is inherently less polymorphic than a vtable. They are just two different implementations of the same thing. But, the “clean” code rules say to prefer polymorphism to switch statements, so I’m using their terminology here, where clearly they don’t think a switch statement is polymorphic.*
+Writing this response uncovered surprising insights that extend beyond the main argument. One particular claim from Muratori sparked additional investigation:
 
-While the discussion about maintainability and extensibility in part 3 shows that there is indeed a major difference between switch statements and virtual methods, I was puzzled by the speed of switch statements.
+> *Personally, I wouldn't say that a switch statement is inherently less polymorphic than a vtable. They are just two different implementations of the same thing. But, the "clean" code rules say to prefer polymorphism to switch statements, so I'm using their terminology here, where clearly they don't think a switch statement is polymorphic.*
 
-In the old days we tried to avoid big switch case statements also because of their speed penalty: "While a virtual method just has two jumps the switch has a lot of comparisons". Even with branch prediction there shall be a cross point, when the number of cases is so high that a vtable gets faster. I wrote a small benchmark program to find out where this cross point is. I stopped after 1000 case statements and still being significantly faster than a virtual method call.
-Branch prediction seems to be incredibly efficient and raises the question if c++ compilers shall use a switch implementation for virtual methods.
+While Part 3 demonstrates fundamental architectural differences between switch statements and virtual methods, Muratori's performance observations about switches proved intriguingly counterintuitive.
+
+### The Branch Prediction Revelation
+
+Traditional wisdom suggested avoiding large switch statements due to performance penalties—multiple comparisons versus virtual methods' simple double indirection. Even accounting for branch prediction, there should theoretically be a crossover point where virtual tables become faster than switches.
+
+Determined to find this crossover, I wrote benchmark programs scaling from small switch statements up to 1000 cases. The results were startling: **switches remained significantly faster even at 1000 cases**. Modern branch prediction has become remarkably sophisticated, challenging decades-old performance assumptions and raising intriguing questions about optimal compiler implementation strategies for virtual method dispatch.
+
+This discovery reinforces the importance of empirical measurement over inherited assumptions—the performance landscape continues evolving with hardware advances.
 
 [^1]: All benchmark code, implementations, and build instructions are available at: https://github.com/kochelmonster/articles/tree/master/cleancode
