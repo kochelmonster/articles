@@ -407,7 +407,7 @@ public:
 
 These classes preserve the cleanliness of the domain model while enabling a layout the CPU loves.
 
-### 3.2 Using the Collectors (Precomputation Phase)
+### 5.2 Using the Collectors (Precomputation Phase)
 
 We build the usual polymorphic shape list for clarity and extensibility, and simultaneously feed the collectors. The loop performs all virtual dispatch exactly once per shape; afterwards aggregation is pure array math.
 
@@ -430,7 +430,7 @@ for (u32 i = 0; i < N; ++i) {
 
 Conceptually: we have transformed a virtual-call dominated reduction into two phases (gather + crunch). If you port to a different architecture or change vector width, this gathering code remains untouched.
 
-### 3.3 Aggregation: Vectorized Crunch Layer
+### 5.3 Aggregation: Vectorized Crunch Layer
 
 The aggregation functions operate on plain contiguous floats. They use AVX (256‑bit) intrinsics for eight‑wide parallelism, loop unrolling, multiple accumulators to hide latency, prefetching to reduce cache miss penalties, and (in the weighted variant) FMA for `a*b + c` in one fused step.
 
